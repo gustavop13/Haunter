@@ -54,7 +54,7 @@ class Lens {
     coords.put("0", new Integer[]{991, 688});
   }
   boolean update(char next) {
-    if(next == ' ') return true;
+    if(!coords.containsKey(str(next))) return true;
     if(x < coords.get(str(next))[0]-buffer) {
       x += speed;
     } else if(lens.x > coords.get(str(next))[0]+buffer) {

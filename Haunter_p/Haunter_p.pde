@@ -25,25 +25,25 @@ Movie dancin;
 
 // Sound
 import processing.sound.*;
-SoundFile file;
 SoundFile song1;
 SoundFile song2;
-SoundFile oof;
-SoundFile alert;
+SoundFile song3;
 
 // Game info
 Character doug;
 Character mcgee;
 Character bates;
+Ghost ghost1;
+Ghost ghost2;
 Character player;
 
-int lv = 0;
+int lv = 1;
+int script = 38;
+int fade = 0;
 
 String phone = "";
 
 PImage skull;
-PImage sp;
-PImage sms;
 PImage c_spritesheet;
 PImage t_box;
 PImage basement;
@@ -60,8 +60,6 @@ Prop coffee_table;
 
 PImage mascara;  
 PImage magnified, normal;
-
-int script = 0;
 
 Lens lens;
 int current;
@@ -95,8 +93,7 @@ void setup() {
   
   song1 = new SoundFile(this, "pawrtl.wav");
   song2 = new SoundFile(this, "bound.wav");
-  oof = new SoundFile(this, "oof.mp3");
-  alert = new SoundFile(this, "alert.mp3");
+  song3 = new SoundFile(this, "idfk.wav");
   song1.loop();
   
   control = ControlIO.getInstance(this);
@@ -112,6 +109,9 @@ void setup() {
   doug = new Character(c_spritesheet, 0, 0, 4);
   bates = new Character(c_spritesheet, 0, 0, 3);
   mcgee = new Character(c_spritesheet, 0, 0, 2);
+  ghost1 = new Ghost(c_spritesheet, width/2, height/2, 6);
+  ghost2 = new Ghost(c_spritesheet, width/2, height/2, 5);
+  //370, 400
   player = bates;
   doug.x = 500;
   doug.y = 450;
@@ -119,11 +119,6 @@ void setup() {
   bates.y = 450;
   mcgee.x = 1480;
   mcgee.y = 0;
-  
-  sp = loadImage("phone.png");
-  sp.resize(50, 0);
-  sms = loadImage("sms.png");
-  sms.resize(50, 0);
   
   normal = loadImage("ouija.png");
   magnified = loadImage("ouija2.png");
@@ -138,7 +133,7 @@ void setup() {
   props_basement.add(mcgee);
   props_basement.add(doug);
   
-  props_kitchen.add(bates);
+  props_kitchen.add(doug);
   
   lamp = new Prop(prop_sheet.get(0, 370, 130, 360), 460, 560);
   sofa = new Prop(prop_sheet.get(630, 0, 510, 250), 750, 580);
@@ -179,6 +174,11 @@ void draw() {
       board();
       break;
     case 6:
+      song2.stop();
+      if(!song3.isPlaying()) song3.loop();
+      lv5();
+      break;
+    case 7:
       credits();
       break;
   }
@@ -206,6 +206,9 @@ void lv1() {
   for(Prop prop : props_basement) {
     if(prop == player) {
       player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
+    }
+    if(prop == ghost2) {
+      ghost2.update();
     }
     for(Prop prop2 : props_basement) {
       if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
@@ -369,7 +372,7 @@ void lv1() {
     case 27:
       if(val.charAt(0) == 'O' && val.charAt(1) == 'K') {
         port.write("r");
-        delay(4000);
+        delay(8000);
       } else {
         msg = val.substring(0, val.length()-2).toUpperCase();
         lv = 5;
@@ -383,7 +386,61 @@ void lv1() {
     case 29:
       if(doug.say("Sounds like a retarded fucking ghost if \nyou ask me.")) script++;
       break;
-  }    
+    case 30:
+      if(doug.say("I'm getting thirsty anyway. I'm gonna go \nupstairs to make myself an Arnold Palmer.")) script++;
+      break;
+    case 31:
+      if(doug.say("You guys want anything?")) script++;
+      break;
+    case 32:
+      if(bates.say("I'll have one too. Thank you Doug.")) script++;
+      break;
+    case 33:
+      if(doug.say("How about you, Mcgee?")) script++;
+      break;
+    case 34:
+      if(mcgee.say("Do you put sugar in your iced tea?")) script++;
+      break;
+    case 35:
+      if(doug.say("No, I just put a shit ton of sugar in the \nlemonade so it balances out.")) script++;
+      break;
+    case 36:
+      if(mcgee.say("I'll take a lemonade then.")) script++;
+      break;
+    case 37:
+      if(doug.say("Alright when I come back we can give it \nanother go but Mcgee is not allowed to touch\nit.")) script++;
+      break;
+    case 38:
+      if(doug.say("I don't want him moving it and spelling\nout any more dumb shit. I'll be right back.")) script++;
+      break;
+    case 39:
+      doug.restrained = false;
+      bates.restrained = false;
+      if(doug.x < 1120) {
+        doug.update(1, 0);
+      } else if(doug.y > 100){
+        doug.update(0, -1);
+      } else if(doug.x < 1450) {
+        doug.update(.7, -.25);
+      } else {
+        script++;
+      }
+      break;
+    case 40:
+      //Move doug and fade to black
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        lv=6;
+      }
+      break;
+  }   
   
   //Freeroam
   if(player.x < 1220 && player.x > 1000 && player.y < 450 && player.y > 400) {
@@ -393,46 +450,8 @@ void lv1() {
     ellipse(1110, 310, 50, 50);
     fill(255);
     text("A", 1113, 315);
-    if(gpad.getButton("A").pressed()) {
-      while(gpad.getButton("A").pressed());
-      bates.x = 1200;
-      bates.y = 450;
-      lv = 2;
-    }
   }
-  //if(player.x < 225 && player.x > 175 && player.y < 275 && player.y > 225) {
-  //  rect(250, 150, 100, 50);
-  //  fill(0);
-  //  text("Press A", 250, 150);
-  //  if(gpad.getButton("A").pressed()) {
   //    port.write("c" + phone);
-  //    delay(100);
-  //    ellipse(720, 450, 30, 30);
-  //  }
-  //  fill(255);
-  //}
-  //if(player.x < 1325 && player.x > 1275 && player.y < 275 && player.y > 225) {
-  //  rect(1300, 150, 100, 50);
-  //  fill(0);
-  //  text("Press A", 1300, 150);
-  //  if(gpad.getButton("A").pressed()) {
-  //    port.write("s" + phone);
-  //    delay(100);
-  //    ellipse(720, 450, 30, 30);
-  //  }
-  //  fill(255);
-  //}
-  if(val != null) {
-    text(val, 50, 50);
-  }
-  if(gpad.getButton("Y").pressed()) {
-    oof.play();
-    while(gpad.getButton("Y").pressed());
-  }
-  if(gpad.getButton("X").pressed()) {
-    alert.play();
-    while(gpad.getButton("X").pressed());
-  }
   if(gpad.getButton("Select").pressed()) {
     while(gpad.getButton("Select").pressed());
     lv = 3;
@@ -480,10 +499,28 @@ void lv2() {
     text("A", 1213, 305);
     if(gpad.getButton("A").pressed()) {
       while(gpad.getButton("A").pressed());
-      bates.x = 1100;
-      bates.y = 425;
+      player.x = 1100;
+      player.y = 425;
       lv = 1;
     }
+  }
+  switch(script) {
+    case 48:
+      if(fade > 0) {
+          fill(0,fade);
+          stroke(0);
+          rect(width/2,height/2,width,height);
+          fade -= 2;
+        } else {
+          script++;
+        }
+        break;
+    case 49:
+      if(doug.say("High and dryyyyyy..Out of the raaiiiin...")) script++;
+      break;
+    case 50:
+      if(doug.say("Mcgee's gonna need an insulin chaser\nfor this lemonade. Better head downstairs\n")) script++;
+      break;
   }
 }
 
@@ -538,6 +575,70 @@ void lv4() {
       }
     }
     prop.show();
+  }
+}
+
+void lv5() {
+  background(0);
+  if(script < 48 && fade < 254) {
+    ghost1.update();
+    ghost1.show();
+  } else if(fade < 254){
+    ghost2.update();
+    ghost2.show();
+  }
+  switch(script) {
+    case 40:
+      if(fade > 0) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade -= 2;
+      } else {
+        script++;
+      }
+    case 41:
+      if(ghost1.say("She was...")) script++;
+      break;
+    case 42:
+      if(ghost1.say("Pulchritude incarnate...She was...")) script++;
+      break;
+    case 43:
+      if(ghost1.say("As perfect a human being as anyone could \never aspire to be.")) script++;
+      break;
+    case 44:
+      if(ghost1.say("The way she looked at me while she talked...\nThe words she spoke and the way she \nphrased them. ")) script++;
+      break;
+    case 45:
+      if(ghost1.say("I was all too aware that we belonged to\na different species altogether...She...")) script++;
+      break;
+    case 46:
+      if(ghost1.say("Belonged to a world made for noone and I\nwas made to belong nowhere.")) script++;
+      break;
+    case 47:
+      if(ghost1.say("Perhaps this is where I belong...At least \nuntil I'm called somewhere else... But until \nthen..")) script++;
+      break;
+    case 48:
+      if(ghost2.say("\"Long live the underground.\"")) {
+        script++;
+        fade = 0;
+      }
+      break;
+    case 49:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        player = doug;
+        player.x = width/2;
+        player.y = height/2;
+        lv=2;
+      }
   }
 }
 
