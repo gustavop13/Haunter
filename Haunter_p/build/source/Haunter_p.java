@@ -1,30 +1,55 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import processing.serial.*; 
+import java.util.Map; 
+import java.util.Collections; 
+import org.gamecontrolplus.gui.*; 
+import org.gamecontrolplus.*; 
+import net.java.games.input.*; 
+import processing.video.*; 
+import processing.sound.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class Haunter_p extends PApplet {
+
 // Gustavo Placencia Carranza
 
 // Arduino
-import processing.serial.*;
+
 Serial port;
 String val = "N/A";
 boolean first = true;
 
 // Java
-import java.util.Map;
-import java.util.Collections;
+
+
 
 // Gamepad
-import org.gamecontrolplus.gui.*;
-import org.gamecontrolplus.*;
-import net.java.games.input.*;
+
+
+
 
 ControlIO control;
 Configuration config;
 ControlDevice gpad;
 
 // Video
-import processing.video.*;
+
 Movie dancin;
 
 // Sound
-import processing.sound.*;
+
 SoundFile song1;
 SoundFile song2;
 SoundFile song3;
@@ -74,8 +99,8 @@ ArrayList<Prop> props_living_room = new ArrayList<Prop>();
 Light[] lights = new Light[10];
 int hue;
 
-void setup() {
-  fullScreen();
+public void setup() {
+  
   background(0);
   noCursor();
   rectMode(CENTER);
@@ -151,12 +176,12 @@ void setup() {
   props_living_room.add(coffee_table);
 
   for(int i = 0; i < 10; i++) lights[i] = new Light();
-  hue = int(random(0, 255));
+  hue = PApplet.parseInt(random(0, 255));
 
   dancin = new Movie(this, "dancin.mp4");
 }
 
-void draw() {
+public void draw() {
   if(gpad.getButton("XBOX").pressed()) {
     while(gpad.getButton("XBOX").pressed());
     lv = 7;
@@ -203,7 +228,7 @@ void draw() {
   }
 }
 
-void titlescreen() {
+public void titlescreen() {
   background(0);
   fill(255);
   textSize(72);
@@ -218,7 +243,7 @@ void titlescreen() {
   }
 }
 
-void lv1() {
+public void lv1() {
   background(basement);
   textSize(20);
   Collections.sort(props_basement);
@@ -255,12 +280,12 @@ void lv1() {
     case 4:
       mcgee.restrained = false;
       if(mcgee.x > 1130) {
-        mcgee.update(-.7, 0);
-        mcgee.update(0, .25);
+        mcgee.update(-.7f, 0);
+        mcgee.update(0, .25f);
       } else if(mcgee.y < 450){
-        mcgee.update(0, .7);
+        mcgee.update(0, .7f);
       } else if(mcgee.x > 800) {
-        mcgee.update(-.7, 0);
+        mcgee.update(-.7f, 0);
       } else {
         mcgee.update(0,0);
         script = 5;
@@ -360,17 +385,17 @@ void lv1() {
       mcgee.restrained = false;
       doug.restrained = false;
       if(mcgee.x > 600) {
-        mcgee.update(-.7, 0);
+        mcgee.update(-.7f, 0);
       } else if(mcgee.y < 720){
-        mcgee.update(0, .7);
+        mcgee.update(0, .7f);
       } else {
         mcgee.update(0, 0);
         mcgee.restrained = true;
       }
       if(doug.x > 370) {
-        doug.update(-.7, 0);
+        doug.update(-.7f, 0);
       } else if(doug.y < 630){
-        doug.update(0, .7);
+        doug.update(0, .7f);
       } else {
         doug.update(0, 0);
         doug.restrained = true;
@@ -440,7 +465,7 @@ void lv1() {
       } else if(doug.y > 100){
         doug.update(0, -1);
       } else if(doug.x < 1450) {
-        doug.update(.7, -.25);
+        doug.update(.7f, -.25f);
       } else {
         script++;
       }
@@ -494,9 +519,9 @@ void lv1() {
       stroke(0);
       rect(width/2,height/2,width,height);
       if(doug.x > 370) {
-        doug.update(-.7, 0);
+        doug.update(-.7f, 0);
       } else if(doug.y < 630){
-        doug.update(0, .7);
+        doug.update(0, .7f);
       } else {
         doug.update(0, 0);
         doug.restrained = true;
@@ -533,7 +558,7 @@ void lv1() {
   }
 }
 
-void lv2() {
+public void lv2() {
   background(kitchen);
   textSize(20);
   Collections.sort(props_kitchen);
@@ -607,7 +632,7 @@ void lv2() {
   }
 }
 
-void lv3() {
+public void lv3() {
   background(living_room);
   textSize(20);
   Collections.sort(props_living_room);
@@ -641,7 +666,7 @@ void lv3() {
   }
 }
 
-void lv4() {
+public void lv4() {
   background(living_room);
   textSize(20);
   Collections.sort(props_living_room);
@@ -661,7 +686,7 @@ void lv4() {
   }
 }
 
-void lv5() {
+public void lv5() {
   background(0);
   if(script < 48 && fade < 254) {
     ghost1.update();
@@ -725,19 +750,19 @@ void lv5() {
   }
 }
 
-void lv6() {
+public void lv6() {
   background(corazon);
   ghost3.update();
   ghost3.show();
   lightshow();
-  if(frameCount%40 == 0) hue = int(random(0,255));
+  if(frameCount%40 == 0) hue = PApplet.parseInt(random(0,255));
   colorMode(HSB);
-  color c = color(hue, 255, 255);
+  int c = color(hue, 255, 255);
   stroke(c, 20);
   fill(c, 20);
   rect(width/2, height/2, width, height);
 }
-void credits() {
+public void credits() {
   if(song1.isPlaying()) song1.stop();
   if(song2.isPlaying()) song2.stop();
   if(song3.isPlaying()) song3.stop();
@@ -756,17 +781,17 @@ void credits() {
   }
 }
 
-void movieEvent(Movie m) {
+public void movieEvent(Movie m) {
   m.read();
 }
 
-void board() {
+public void board() {
   background(255);
   fill(0);
   ellipse(lens.x, lens.y, 175, 175);
   mascara=get();
   normal.mask(mascara);
-  image(magnified, (width/2) - (lens.x-width/2)/1.9, (height/2) - (lens.y-height/2)/1.9);
+  image(magnified, (width/2) - (lens.x-width/2)/1.9f, (height/2) - (lens.y-height/2)/1.9f);
   image(normal, width/2, height/2);
   strokeWeight(5);
   noFill();
@@ -787,14 +812,14 @@ void board() {
   }
 }
 
-void lightshow() {
+public void lightshow() {
   for(int i = 0; i < lights.length; i++) {
     lights[i].show();
     if(lights[i].update()) lights[i] = new Light();
   }
 }
 
-void keyPressed() {
+public void keyPressed() {
   if(lv == 0) {
     if(key == ENTER && phone.length() == 10) {
       lv = 1;
@@ -806,6 +831,301 @@ void keyPressed() {
   }
 }
 
-void serialEvent(Serial port) {
+public void serialEvent(Serial port) {
   val = port.readStringUntil('\n');
+}
+class Character extends Prop {
+  PImage spritesheet;
+  PImage t_box = loadImage("t_box.png");
+  int count;
+  int index;
+  int current;
+  int size = 32*5;
+  float deadzone = .2f;
+  boolean restrained;
+  Dialog line_queue;
+  
+  Character(PImage new_s, int new_x, int new_y, int indx) {
+    super(new_s, new_x, new_y);
+    imageMode(CENTER);
+    spritesheet = new_s;
+    index = indx;
+    sprite = spritesheet.get(0, index*size, size, size);
+    count = 2;
+    w = size;
+    h = size;
+    restrained = true;
+  }
+  
+  public @Override
+  void update(float lr, float ud) {
+    current = frameCount/12%count;
+    if(lr > deadzone || lr < -deadzone || ud > deadzone || ud < -deadzone) {
+      if(lr > deadzone) {
+        x += lr * speed;
+        sprite = spritesheet.get(current*size + 6*size, index*size, size, size);
+        if(restrained) {
+          x = constrain(x, 0, 1440);
+          y = constrain(y, 420, 900);
+        }
+      } 
+      if(lr < -deadzone) {
+        x += lr * speed;
+        sprite = spritesheet.get(current*size + 4*size, index*size, size, size);
+        if(restrained) {
+          x = constrain(x, 0, 1440);
+          y = constrain(y, 420, 900);  
+        }
+      }
+      if(ud > deadzone) {
+        y +=ud * speed;
+        sprite = spritesheet.get(current*size + 2*size, index*size, size, size);
+        if(restrained) {
+          x = constrain(x, 0, 1440);
+          y = constrain(y, 420, 900);  
+        }
+      }
+      if (ud < -deadzone) {
+        y += ud * speed;
+        sprite = spritesheet.get(current*size + 9*size, index*size, size, size);
+        if(restrained) {
+          x = constrain(x, 0, 1440);
+          y = constrain(y, 420, 900);
+        }
+      }
+    } else {
+      sprite = spritesheet.get(0, index*size, size, size);
+    }
+  }
+  
+  public boolean say(String line) {
+    if(line_queue == null) {
+      line_queue = new Dialog(line, t_box, this.index, this.spritesheet);
+    }
+    line_queue.update();
+    if(line_queue.count/2 > line_queue.text.length()) {
+      if(gpad.getButton("A").pressed()) {
+        while(gpad.getButton("A").pressed());
+        line_queue = null;
+        return true;
+      }
+    }
+    return false;
+  }
+}
+class Dialog {
+  String text;
+  PImage t_box;
+  PImage spritesheet;
+  int size;
+  int index;
+  int count;
+  int time;
+  boolean skipped;
+  
+  Dialog(String txt, PImage textbox, int idx, PImage ss) {
+    t_box = textbox;
+    spritesheet = ss;
+    size = 32*5;
+    text = txt;
+    index = idx;
+    count = 1;
+    time = frameCount;
+    skipped = false;
+  }
+  
+  public void update() {
+    count = frameCount - time;
+    stroke(255);
+    strokeWeight(3);
+    fill(0);
+    rect(width/2, 100, 700, 100, 10);
+    fill(255);
+    rect(width/2 + 290, 100, 117, 100, 0, 10, 10, 0);
+    if(count/2 < text.length()) {
+      image(spritesheet.get((count/5%2)*size, index*size, size, 100), width/2 +290, 97);
+    } else {
+      image(spritesheet.get(0, index*size, size, 100), width/2 + 290, 97);
+    }
+    textAlign(LEFT);
+    textSize(26);
+    text(text.substring(0, min(count/2, text.length())), 380, 80);
+    textSize(20);
+    textAlign(CENTER);
+  }
+}
+class Ghost extends Character {
+  
+  Ghost(PImage new_s, int new_x, int new_y, int indx) {
+    super(new_s, new_x, new_y, indx);
+    count = 4;
+  }
+  
+  public void update() {
+    current = frameCount/8%count + 2;
+    sprite = spritesheet.get(current*size, index*size, size, size);
+  }
+}
+class Lens {
+  int size;
+  int speed;
+  int buffer;
+  float x;
+  float y;
+  boolean x_ready;
+  boolean y_ready;
+  HashMap<String, Integer[]> coords;
+  
+  Lens() {
+    x = width/2;
+    y = height/2;
+    x_ready = false;
+    x_ready = false;
+    speed = 20;
+    buffer = 10;
+    coords = new HashMap<String,Integer[]>(); 
+    coords.put("A", new Integer[]{157, 346});
+    coords.put("B", new Integer[]{218, 324});
+    coords.put("C", new Integer[]{280, 305});
+    coords.put("D", new Integer[]{338, 277});
+    coords.put("E", new Integer[]{409, 246});
+    coords.put("F", new Integer[]{469, 222});
+    coords.put("G", new Integer[]{529, 207});
+    coords.put("H", new Integer[]{917, 212});
+    coords.put("I", new Integer[]{964, 218});
+    coords.put("J", new Integer[]{1024, 235});
+    coords.put("K", new Integer[]{1082, 260});
+    coords.put("L", new Integer[]{1150, 295});
+    coords.put("M", new Integer[]{1219, 323});
+    coords.put("N", new Integer[]{1295, 351});
+    coords.put("O", new Integer[]{197, 552});
+    coords.put("P", new Integer[]{259, 535});
+    coords.put("Q", new Integer[]{332, 507});
+    coords.put("R", new Integer[]{407, 477});
+    coords.put("S", new Integer[]{473, 437});
+    coords.put("T", new Integer[]{540, 417});
+    coords.put("U", new Integer[]{926, 414});
+    coords.put("V", new Integer[]{999, 427});
+    coords.put("W", new Integer[]{1072, 460});
+    coords.put("X", new Integer[]{1150, 499});
+    coords.put("Y", new Integer[]{1215, 523});
+    coords.put("Z", new Integer[]{1281, 544});
+    coords.put("1", new Integer[]{418, 688});
+    coords.put("2", new Integer[]{471, 688});
+    coords.put("3", new Integer[]{529, 688});
+    coords.put("4", new Integer[]{604, 688});
+    coords.put("5", new Integer[]{666, 688});
+    coords.put("6", new Integer[]{730, 688});
+    coords.put("7", new Integer[]{794, 688});
+    coords.put("8", new Integer[]{862, 688});
+    coords.put("9", new Integer[]{928, 688});
+    coords.put("0", new Integer[]{991, 688});
+  }
+  public boolean update(char next) {
+    if(!coords.containsKey(str(next))) return true;
+    if(x < coords.get(str(next))[0]-buffer) {
+      x += speed;
+    } else if(lens.x > coords.get(str(next))[0]+buffer) {
+      x -= speed;
+    } else {
+      x_ready = true;
+    }
+    if(y < coords.get(str(next))[1]-buffer) {
+      y += speed;
+    } else if(y > coords.get(str(next))[1]+buffer) {
+      y -= speed;
+    } else {
+      y_ready = true;
+    }
+    return (x_ready && y_ready);
+  }
+}
+class Light {
+  float x;
+  float y;
+  float r;
+  int c;
+  int life = 2000;
+  float alpha;
+  float speed = 2;
+
+  Light() {
+    x = random(0, width*1.5f);
+    y = random(0, height);
+    r = random(50, 200);
+    alpha = random(0,200);
+    colorMode(HSB);
+    c = color(random(0,255),255,255);
+  }
+
+  public boolean update() {
+    if(alpha >= 200) speed *= -1;
+    alpha += speed;
+    x -= r*.01f;
+    if(alpha <= 0) return true;
+    else return false;
+  }
+
+  public void show() {
+    stroke(c, alpha);
+    fill(c, alpha);
+    circle(x,y,r);
+  }
+
+
+}
+class Prop implements Comparable<Prop>{
+  int x;
+  int y;
+  int w;
+  int h;
+  float speed = 5;
+  PImage sprite;
+  
+  Prop(PImage new_s, int new_x, int new_y) {
+    x = new_x;
+    y = new_y;
+    sprite = new_s;
+    w = sprite.width;
+    h = sprite.height;
+  }
+  
+  public void move(float new_x, float new_y) {
+    if(x < new_x) {
+      x += speed;
+    } else if(x > new_x) {
+      x -= speed;
+    }
+    if(y < new_y) {
+      y += speed;
+    } else if(y > new_y) {
+      y -= speed;
+    }
+  }
+  
+  public @Override
+  int compareTo(Prop other) {
+    if(this.y + this.h/2 > other.y + other.h/2)
+        return 1;
+    else if (this.y + this.h/2 == other.y + other.h/2)
+        return 0 ;
+    return -1 ;
+  }
+  
+  public void update(float ud, float lr) {
+  }
+  
+  public void show() {
+    image(sprite, x, y);
+  }
+}
+  public void settings() {  fullScreen(); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "Haunter_p" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
