@@ -53,6 +53,7 @@ Movie dancin;
 SoundFile song1;
 SoundFile song2;
 SoundFile song3;
+SoundFile song4;
 
 // Game info
 Character doug;
@@ -125,6 +126,7 @@ public void setup() {
   song1 = new SoundFile(this, "pawrtl.wav");
   song2 = new SoundFile(this, "bound.wav");
   song3 = new SoundFile(this, "idfk.wav");
+  song4 = new SoundFile(this, "about_schroder.wav");
   song1.loop();
 
   control = ControlIO.getInstance(this);
@@ -219,7 +221,8 @@ public void draw() {
     case 7:
       song1.stop();
       song2.stop();
-      //if(!song3.isPlaying()) song3.loop();
+      song3.stop();
+      if(!song4.isPlaying()) song4.loop();
       lv6();
       break;
     case 8:

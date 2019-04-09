@@ -28,6 +28,7 @@ import processing.sound.*;
 SoundFile song1;
 SoundFile song2;
 SoundFile song3;
+SoundFile song4;
 
 // Game info
 Character doug;
@@ -73,6 +74,7 @@ ArrayList<Prop> props_living_room = new ArrayList<Prop>();
 
 Light[] lights = new Light[10];
 int hue;
+int glare;
 
 void setup() {
   fullScreen();
@@ -100,6 +102,7 @@ void setup() {
   song1 = new SoundFile(this, "pawrtl.wav");
   song2 = new SoundFile(this, "bound.wav");
   song3 = new SoundFile(this, "idfk.wav");
+  song4 = new SoundFile(this, "about_schroder.wav");
   song1.loop();
 
   control = ControlIO.getInstance(this);
@@ -145,13 +148,17 @@ void setup() {
   lamp = new Prop(prop_sheet.get(0, 370, 130, 360), 460, 560);
   sofa = new Prop(prop_sheet.get(630, 0, 510, 250), 750, 580);
   coffee_table = new Prop(prop_sheet.get(670, 250, 400, 150), 740, 750);
-  props_living_room.add(bates);
   props_living_room.add(lamp);
   props_living_room.add(sofa);
   props_living_room.add(coffee_table);
+  props_living_room.add(doug);
+  props_living_room.add(bates);
+  props_living_room.add(mcgee);
+  props_living_room.add(ghost3);
 
   for(int i = 0; i < 10; i++) lights[i] = new Light();
   hue = int(random(0, 255));
+  glare = 255;
 
   dancin = new Movie(this, "dancin.mp4");
 }
@@ -194,7 +201,8 @@ void draw() {
     case 7:
       song1.stop();
       song2.stop();
-      //if(!song3.isPlaying()) song3.loop();
+      song3.stop();
+      if(!song4.isPlaying()) song4.loop();
       lv6();
       break;
     case 8:
@@ -471,11 +479,17 @@ void lv1() {
       if(ghost3.say("Hullo, are those Arnold Palmers:?")) script++;
       break;
     case 56:
-      if(doug.say(".....Does he know how to play pandemic?")) {
+      if(mcgee.say("We can finally play 4-player games.")) script++;
+      break;
+    case 57:
+      if(doug.say(".....")) {
         script++;
       }
       break;
-    case 57:
+    case 58:
+      if(doug.say("Does he know how to play pandemic?")) script++;
+      break;
+    case 59:
       if(fade < 255) {
         fill(0,fade);
         stroke(0);
@@ -489,7 +503,7 @@ void lv1() {
         doug.restrained = false;
       }
       break;
-    case 58:
+    case 60:
       fill(0, fade);
       stroke(0);
       rect(width/2,height/2,width,height);
@@ -502,7 +516,7 @@ void lv1() {
         doug.restrained = true;
         script++;
       }
-    case 59:
+    case 61:
       if(fade > 0) {
         fill(0,fade);
         stroke(0);
@@ -513,6 +527,39 @@ void lv1() {
         stroke(0);
         rect(width/2,height/2,width,height);
         script++;
+      }
+      break;
+    case 62:
+      if(mcgee.say("..And that makes three wins!")) script++;
+      break;
+    case 63:
+      if(mcgee.say("I don't think we've ever won this many times\nin a row before.")) script++;
+      break;
+    case 64:
+      if(bates.say("I'm kinda getting tired of this though. Can\nwe play Aleanation now?")) script++;
+      break;
+    case 65:
+      if(doug.say("No way in hell we're playing that. It's gonna\ntake forever to teach the new guy.")) script++;
+      break;
+    case 66:
+      if(ghost3.say("Alienation?")) script++;
+      break;
+    case 67:
+      if(doug.say("AlEAnation. It's a game Bates made but he always\nwins because he's the only one that can\nsolve a rubik's cube in under 10 minutes.")) script++;
+      break;
+    case 68:
+      if(ghost3.say("Well that sounds interesting but I'm afraid I \nhave some business to attend to.")) script++;
+      break;
+    case 69:
+      if(bates.say("Will you come back once you're done?")) script++;
+      break;
+    case 70:
+      if(ghost3.say("The board resides here so I'll usually be\n around until I've done my time.")) script++;
+      break;
+    case 71:
+      if(ghost3.say("I hope I can make it in time for the next\n session of 'Aleanation'.")) {
+        script++;
+        lv = 7;
       }
       break;
   }
@@ -540,6 +587,9 @@ void lv2() {
   for(Prop prop : props_kitchen) {
     if(prop == player) {
       player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
+    }
+    if(prop == ghost2) {
+      ghost2.update();
     }
     for(Prop prop2 : props_kitchen) {
       if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
@@ -578,6 +628,11 @@ void lv2() {
       player.y = 425;
       lv = 1;
     }
+  }
+  if(script >= 80 && script <= 84) {
+    fill(0, 100);
+    stroke(0, 100);
+    rect(width/2,height/2,width,height);
   }
   switch(script) {
     case 48:
@@ -736,6 +791,21 @@ void lv6() {
   stroke(c, 20);
   fill(c, 20);
   rect(width/2, height/2, width, height);
+  switch(script) {
+    case 72:
+      if(ghost3.say("This place hasn't changed at all.")) script++;
+      break;
+    case 73:
+      if(ghost3.say("I probably wasn't gone for too long.")) script++;
+      break;
+    case 74:
+      if(ghost3.say("She should be walking in through the door\nany time now.")) script++;
+      break;
+    case 75:
+      script++;
+      props_basement.add(ghost2);
+      break;
+  }
 }
 void credits() {
   if(song1.isPlaying()) song1.stop();
@@ -792,6 +862,20 @@ void lightshow() {
     lights[i].show();
     if(lights[i].update()) lights[i] = new Light();
   }
+}
+
+void tv_glare() {
+  if(frameCount%3020 == 0) {
+    glare = random(0,255);
+  } else if(frameCount%3040 == 0) {
+    glare = random(0,255);
+  } else if(frameCount%3060 == 0) {
+    glare = random(0,255);
+  }
+  colorMode(HSB);
+  stroke(glare, 100);
+  fill(glare, 100);
+  rect(width/2, height/2, width/2, height/2);
 }
 
 void keyPressed() {
