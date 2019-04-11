@@ -13,7 +13,7 @@ class Light {
     r = random(50, 200);
     alpha = random(0,200);
     colorMode(HSB);
-    c = color(random(0,255),255,255);
+    c = color(random(0,360),255,255);
   }
 
   boolean update() {

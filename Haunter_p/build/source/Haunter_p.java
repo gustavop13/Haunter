@@ -64,9 +64,10 @@ Ghost ghost2;
 Ghost ghost3;
 Character player;
 
-int lv = 0;
-int script = 0;
+int lv = 7;
+int script = 82;
 int fade = 0;
+int timer;
 
 String phone = "";
 
@@ -99,6 +100,7 @@ ArrayList<Prop> props_living_room = new ArrayList<Prop>();
 
 Light[] lights = new Light[10];
 int hue;
+int glare;
 
 public void setup() {
   
@@ -172,13 +174,17 @@ public void setup() {
   lamp = new Prop(prop_sheet.get(0, 370, 130, 360), 460, 560);
   sofa = new Prop(prop_sheet.get(630, 0, 510, 250), 750, 580);
   coffee_table = new Prop(prop_sheet.get(670, 250, 400, 150), 740, 750);
-  props_living_room.add(bates);
   props_living_room.add(lamp);
   props_living_room.add(sofa);
   props_living_room.add(coffee_table);
+  props_living_room.add(doug);
+  props_living_room.add(bates);
+  props_living_room.add(mcgee);
+  props_living_room.add(ghost3);
 
   for(int i = 0; i < 10; i++) lights[i] = new Light();
   hue = PApplet.parseInt(random(0, 255));
+  glare = 255;
 
   dancin = new Movie(this, "dancin.mp4");
 }
@@ -186,7 +192,7 @@ public void setup() {
 public void draw() {
   if(gpad.getButton("XBOX").pressed()) {
     while(gpad.getButton("XBOX").pressed());
-    lv = 7;
+    lv = 8;
   }
   switch(lv) {
     case 0:
@@ -208,7 +214,6 @@ public void draw() {
       lv3();
       break;
     case 4:
-      lv4();
       break;
     case 5:
       board();
@@ -499,11 +504,17 @@ public void lv1() {
       if(ghost3.say("Hullo, are those Arnold Palmers:?")) script++;
       break;
     case 56:
-      if(doug.say(".....Does he know how to play pandemic?")) {
+      if(mcgee.say("We can finally play 4-player games!")) script++;
+      break;
+    case 57:
+      if(doug.say(".....")) {
         script++;
       }
       break;
-    case 57:
+    case 58:
+      if(doug.say("Does he know how to play pandemic?")) script++;
+      break;
+    case 59:
       if(fade < 255) {
         fill(0,fade);
         stroke(0);
@@ -517,7 +528,7 @@ public void lv1() {
         doug.restrained = false;
       }
       break;
-    case 58:
+    case 60:
       fill(0, fade);
       stroke(0);
       rect(width/2,height/2,width,height);
@@ -530,7 +541,8 @@ public void lv1() {
         doug.restrained = true;
         script++;
       }
-    case 59:
+      break;
+    case 61:
       if(fade > 0) {
         fill(0,fade);
         stroke(0);
@@ -541,6 +553,54 @@ public void lv1() {
         stroke(0);
         rect(width/2,height/2,width,height);
         script++;
+      }
+      break;
+    case 62:
+      if(mcgee.say("..And that makes three wins!")) script++;
+      break;
+    case 63:
+      if(mcgee.say("I don't think we've ever won this many times\nin a row before.")) script++;
+      break;
+    case 64:
+      if(bates.say("I'm kinda getting tired of this though. Can\nwe play Aleanation now?")) script++;
+      break;
+    case 65:
+      if(doug.say("No way in hell we're playing that. It's gonna\ntake forever to teach the new guy.")) script++;
+      break;
+    case 66:
+      if(ghost3.say("Alienation?")) script++;
+      break;
+    case 67:
+      if(doug.say("AlEAnation. It's a game Bates made but he al\nways wins because he's the only one that can\nsolve a rubik's cube in under 3 minutes.")) script++;
+      break;
+    case 68:
+      if(ghost3.say("Well that sounds interesting but I'm afraid I \nhave to go. I have some business to \nattend to.")) script++;
+      break;
+    case 69:
+      if(bates.say("Will you come back once you're done?")) script++;
+      break;
+    case 70:
+      if(ghost3.say("The board resides here so I'll usually be\naround until I've done my time.")) script++;
+      break;
+    case 71:
+      if(ghost3.say("I hope I can make it in time for the next\nsession of 'Aleanation'.")) {
+        script++;
+        ghost3.x = width/2;
+        ghost3.y = height/2;
+      }
+      break;
+    case 72:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+        lv = 7;
       }
       break;
   }
@@ -569,6 +629,9 @@ public void lv2() {
     if(prop == player) {
       player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
     }
+    if(prop == ghost1) {
+      ghost1.update();
+    }
     for(Prop prop2 : props_kitchen) {
       if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
         player.x = constrain(player.x, prop2.x+prop2.w/2, width);
@@ -579,7 +642,7 @@ public void lv2() {
     }
     prop.show();
   }
-  //if(player.x < 1400 && player.x > 1300 && player.y < 600 && player.y > 550) {
+  // if(player.x < 1400 && player.x > 1300 && player.y < 600 && player.y > 550) {
   //  fill(0);
   //  stroke(255);
   //  strokeWeight(3);
@@ -588,11 +651,11 @@ public void lv2() {
   //  text("A", 1383, 505);
   //  if(gpad.getButton("A").pressed()) {
   //    while(gpad.getButton("A").pressed());
-  //    bates.x = 100;
-  //    bates.y = 450;
+  //    player.x = 100;
+  //    player.y = 450;
   //    lv = 3;
   //  }
-  //}
+  // }
   if(player.x < 1250 && player.x > 1150 && player.y < 430 && player.y > 400) {
     fill(0);
     stroke(255);
@@ -632,25 +695,75 @@ public void lv2() {
     case 51:
       script++;
       break;
+    case 86:
+      if(fade > 180) {
+        fill(0,fade);
+        stroke(0, fade);
+        rect(width/2,height/2,width,height);
+        fade -= 2;
+      } else {
+        fill(0,fade);
+        stroke(0, fade);
+        rect(width/2,height/2,width,height);
+        timer = frameCount;
+        script++;
+      }
+      break;
+    case 87:
+      fill(0,fade);
+      stroke(0, fade);
+      rect(width/2,height/2,width,height);
+      if(frameCount-timer == 200) {
+        script++;
+        fade = 0;
+        doug.x = 1350;
+      }
+      break;
+    case 88:
+      if(doug.say("What are you doing in the dark?")) script++;
+      break;
+    case 89:
+      if(ghost1.say("Just got back. Didn't feel like going\nanywhere else.")) script++;
+      break;
+    case 90:
+      if(doug.say("Wanna come watch Annie Hall with us?\nI made fish tacos.")) script++;
+      break;
+    case 91:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+        lv = 3;
+        doug.x = 850;
+        doug.y = 550;
+        bates.x = 750;
+        bates.y = 550;
+        mcgee.x = 650;
+        mcgee.y = 550;
+        ghost3.y = 300;
+      }
+      break;
   }
 }
 
 public void lv3() {
   background(living_room);
   textSize(20);
-  Collections.sort(props_living_room);
+  bates.sit();
+  mcgee.sit();
+  doug.sit();
   for(Prop prop : props_living_room) {
-    if(prop == player) {
-      player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
-    }
-    for(Prop prop2 : props_living_room) {
-      if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-30 < player.y) {
-        player.x = constrain(player.x, prop2.x+prop2.w/2, width);
-      }
-      if(prop2 != player && (prop2.x-prop2.w/2 < player.x && prop2.x+prop2.w/2 > player.x) && player.x<prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-30 < player.y) {
-        player.x = constrain(player.x, 0, prop2.x-prop2.w/2);
-      }
-    }
+    // if(prop == player) {
+    //   player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
+    // }
+
+    if(prop == ghost3) ghost3.update();
     prop.show();
   }
   if(player.x < 100 && player.x > -1 && player.y < 550 && player.y > 500) {
@@ -667,25 +780,12 @@ public void lv3() {
       lv = 2;
     }
   }
-}
-
-public void lv4() {
-  background(living_room);
-  textSize(20);
-  Collections.sort(props_living_room);
-  for(Prop prop : props_living_room) {
-    if(prop == player) {
-      player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
-    }
-    for(Prop prop2 : props_living_room) {
-      if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
-        player.x = constrain(player.x, prop2.x+prop2.w/2, width);
-      }
-      if(prop2 != player && (prop2.x-prop2.w/2 < player.x && prop2.x+prop2.w/2 > player.x) && player.x<prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
-        player.x = constrain(player.x, 0, prop2.x-prop2.w/2);
-      }
-    }
-    prop.show();
+  tv_glare();
+  if(fade > 0) {
+    fill(0,fade);
+    stroke(0, fade);
+    rect(width/2,height/2,width,height);
+    fade -= 2;
   }
 }
 
@@ -764,14 +864,83 @@ public void lv6() {
   stroke(c, 20);
   fill(c, 20);
   rect(width/2, height/2, width, height);
+  switch(script) {
+    case 73:
+      if(fade > 0) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade -= 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+      }
+      break;
+    case 74:
+      if(ghost3.say("This place hasn't changed a bit.")) script++;
+      break;
+    case 75:
+      if(ghost3.say("I probably wasn't gone for too long.")) script++;
+      break;
+    case 76:
+      if(ghost3.say("She's usually sitting at the bar at this time.")) script++;
+      break;
+    case 77:
+      if(ghost3.say("What would I even say to her...")) script++;
+      break;
+    case 78:
+      if(ghost3.say("In all the time I spent standing right across\nfrom her I never once was sincere.")) script++;
+      break;
+    case 79:
+      if(ghost3.say("Perhaps I was merely using the 'it could never\nwork between us' schtick as a copout.")) script++;
+      break;
+    case 80:
+      if(ghost3.say("It always felt like God had put her on Earth\njust to taunt me.")) script++;
+      break;
+    case 81:
+      if(ghost3.say("Now it feels like he's sent me back down here\nfor the same reason.")) script++;
+      break;
+    case 82:
+      if(ghost3.say("No point in staying here any longer.")) script++;
+      break;
+    case 83:
+      if(ghost3.say("This is a game I refuse to play.")) script++;
+      break;
+    case 84:
+      script++;
+      props_kitchen.add(ghost1);
+      break;
+    case 85:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+        lv = 2;
+        song4.stop();
+        doug.x = 1500;
+        doug.y = 600;
+      }
+      break;
+  }
 }
 public void credits() {
   if(song1.isPlaying()) song1.stop();
   if(song2.isPlaying()) song2.stop();
   if(song3.isPlaying()) song3.stop();
+  if(song4.isPlaying()) song4.stop();
   dancin.play();
   background(0);
   image(dancin, 980, 410);
+  stroke(255);
+  fill(255);
   textSize(56);
   text("Special thanks to:", 720, 100);
   text("Drew Castalia \nPeter Jansen \nLaura Owen \nEvren Bozgeyikli \nGlenn Weyant", 480, 300);
@@ -822,6 +991,25 @@ public void lightshow() {
   }
 }
 
+public void tv_glare() {
+  colorMode(HSB);
+  if(frameCount%30 == 0) {
+    glare = color(PApplet.parseInt(random(0,255)), 100, 100);
+  } else if(frameCount%40 == 0) {
+    glare = color(PApplet.parseInt(random(0,255)), 100, 100);
+  } else if(frameCount%50 == 0) {
+    glare = color(PApplet.parseInt(random(0,255)), 100, 100);
+  } if(frameCount%60 == 0) {
+    glare = color(0,0,100);
+  }
+  stroke(glare, 20);
+  fill(glare, 20);
+  rect(width/2, height/2, width/2, height/2);
+  stroke(0, 20);
+  fill(0, 80);
+  rect(width/2, height/2, width, height);
+}
+
 public void keyPressed() {
   if(lv == 0) {
     if(key == ENTER && phone.length() == 10) {
@@ -847,7 +1035,7 @@ class Character extends Prop {
   float deadzone = .2f;
   boolean restrained;
   Dialog line_queue;
-  
+
   Character(PImage new_s, int new_x, int new_y, int indx) {
     super(new_s, new_x, new_y);
     imageMode(CENTER);
@@ -859,7 +1047,7 @@ class Character extends Prop {
     h = size;
     restrained = true;
   }
-  
+
   public @Override
   void update(float lr, float ud) {
     current = frameCount/12%count;
@@ -871,13 +1059,13 @@ class Character extends Prop {
           x = constrain(x, 0, 1440);
           y = constrain(y, 420, 900);
         }
-      } 
+      }
       if(lr < -deadzone) {
         x += lr * speed;
         sprite = spritesheet.get(current*size + 4*size, index*size, size, size);
         if(restrained) {
           x = constrain(x, 0, 1440);
-          y = constrain(y, 420, 900);  
+          y = constrain(y, 420, 900);
         }
       }
       if(ud > deadzone) {
@@ -885,7 +1073,7 @@ class Character extends Prop {
         sprite = spritesheet.get(current*size + 2*size, index*size, size, size);
         if(restrained) {
           x = constrain(x, 0, 1440);
-          y = constrain(y, 420, 900);  
+          y = constrain(y, 420, 900);
         }
       }
       if (ud < -deadzone) {
@@ -900,7 +1088,7 @@ class Character extends Prop {
       sprite = spritesheet.get(0, index*size, size, size);
     }
   }
-  
+
   public boolean say(String line) {
     if(line_queue == null) {
       line_queue = new Dialog(line, t_box, this.index, this.spritesheet);
@@ -914,6 +1102,10 @@ class Character extends Prop {
       }
     }
     return false;
+  }
+
+  public void sit() {
+    sprite = spritesheet.get(11*size, index*size, size, size);
   }
 }
 class Dialog {
@@ -1058,7 +1250,7 @@ class Light {
     r = random(50, 200);
     alpha = random(0,200);
     colorMode(HSB);
-    c = color(random(0,255),255,255);
+    c = color(random(0,360),255,255);
   }
 
   public boolean update() {

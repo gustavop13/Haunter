@@ -8,7 +8,7 @@ class Character extends Prop {
   float deadzone = .2;
   boolean restrained;
   Dialog line_queue;
-  
+
   Character(PImage new_s, int new_x, int new_y, int indx) {
     super(new_s, new_x, new_y);
     imageMode(CENTER);
@@ -20,7 +20,7 @@ class Character extends Prop {
     h = size;
     restrained = true;
   }
-  
+
   @Override
   void update(float lr, float ud) {
     current = frameCount/12%count;
@@ -32,13 +32,13 @@ class Character extends Prop {
           x = constrain(x, 0, 1440);
           y = constrain(y, 420, 900);
         }
-      } 
+      }
       if(lr < -deadzone) {
         x += lr * speed;
         sprite = spritesheet.get(current*size + 4*size, index*size, size, size);
         if(restrained) {
           x = constrain(x, 0, 1440);
-          y = constrain(y, 420, 900);  
+          y = constrain(y, 420, 900);
         }
       }
       if(ud > deadzone) {
@@ -46,7 +46,7 @@ class Character extends Prop {
         sprite = spritesheet.get(current*size + 2*size, index*size, size, size);
         if(restrained) {
           x = constrain(x, 0, 1440);
-          y = constrain(y, 420, 900);  
+          y = constrain(y, 420, 900);
         }
       }
       if (ud < -deadzone) {
@@ -61,7 +61,7 @@ class Character extends Prop {
       sprite = spritesheet.get(0, index*size, size, size);
     }
   }
-  
+
   boolean say(String line) {
     if(line_queue == null) {
       line_queue = new Dialog(line, t_box, this.index, this.spritesheet);
@@ -75,5 +75,9 @@ class Character extends Prop {
       }
     }
     return false;
+  }
+
+  void sit() {
+    sprite = spritesheet.get(11*size, index*size, size, size);
   }
 }

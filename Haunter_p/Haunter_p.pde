@@ -39,9 +39,10 @@ Ghost ghost2;
 Ghost ghost3;
 Character player;
 
-int lv = 0;
-int script = 0;
+int lv = 7;
+int script = 82;
 int fade = 0;
+int timer;
 
 String phone = "";
 
@@ -74,7 +75,7 @@ ArrayList<Prop> props_living_room = new ArrayList<Prop>();
 
 Light[] lights = new Light[10];
 int hue;
-int glare;
+color glare;
 
 void setup() {
   fullScreen();
@@ -166,7 +167,7 @@ void setup() {
 void draw() {
   if(gpad.getButton("XBOX").pressed()) {
     while(gpad.getButton("XBOX").pressed());
-    lv = 7;
+    lv = 8;
   }
   switch(lv) {
     case 0:
@@ -188,7 +189,6 @@ void draw() {
       lv3();
       break;
     case 4:
-      lv4();
       break;
     case 5:
       board();
@@ -479,7 +479,7 @@ void lv1() {
       if(ghost3.say("Hullo, are those Arnold Palmers:?")) script++;
       break;
     case 56:
-      if(mcgee.say("We can finally play 4-player games.")) script++;
+      if(mcgee.say("We can finally play 4-player games!")) script++;
       break;
     case 57:
       if(doug.say(".....")) {
@@ -516,6 +516,7 @@ void lv1() {
         doug.restrained = true;
         script++;
       }
+      break;
     case 61:
       if(fade > 0) {
         fill(0,fade);
@@ -545,19 +546,34 @@ void lv1() {
       if(ghost3.say("Alienation?")) script++;
       break;
     case 67:
-      if(doug.say("AlEAnation. It's a game Bates made but he always\nwins because he's the only one that can\nsolve a rubik's cube in under 10 minutes.")) script++;
+      if(doug.say("AlEAnation. It's a game Bates made but he al\nways wins because he's the only one that can\nsolve a rubik's cube in under 3 minutes.")) script++;
       break;
     case 68:
-      if(ghost3.say("Well that sounds interesting but I'm afraid I \nhave some business to attend to.")) script++;
+      if(ghost3.say("Well that sounds interesting but I'm afraid I \nhave to go. I have some business to \nattend to.")) script++;
       break;
     case 69:
       if(bates.say("Will you come back once you're done?")) script++;
       break;
     case 70:
-      if(ghost3.say("The board resides here so I'll usually be\n around until I've done my time.")) script++;
+      if(ghost3.say("The board resides here so I'll usually be\naround until I've done my time.")) script++;
       break;
     case 71:
-      if(ghost3.say("I hope I can make it in time for the next\n session of 'Aleanation'.")) {
+      if(ghost3.say("I hope I can make it in time for the next\nsession of 'Aleanation'.")) {
+        script++;
+        ghost3.x = width/2;
+        ghost3.y = height/2;
+      }
+      break;
+    case 72:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
         script++;
         lv = 7;
       }
@@ -588,8 +604,8 @@ void lv2() {
     if(prop == player) {
       player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
     }
-    if(prop == ghost2) {
-      ghost2.update();
+    if(prop == ghost1) {
+      ghost1.update();
     }
     for(Prop prop2 : props_kitchen) {
       if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
@@ -601,7 +617,7 @@ void lv2() {
     }
     prop.show();
   }
-  //if(player.x < 1400 && player.x > 1300 && player.y < 600 && player.y > 550) {
+  // if(player.x < 1400 && player.x > 1300 && player.y < 600 && player.y > 550) {
   //  fill(0);
   //  stroke(255);
   //  strokeWeight(3);
@@ -610,11 +626,11 @@ void lv2() {
   //  text("A", 1383, 505);
   //  if(gpad.getButton("A").pressed()) {
   //    while(gpad.getButton("A").pressed());
-  //    bates.x = 100;
-  //    bates.y = 450;
+  //    player.x = 100;
+  //    player.y = 450;
   //    lv = 3;
   //  }
-  //}
+  // }
   if(player.x < 1250 && player.x > 1150 && player.y < 430 && player.y > 400) {
     fill(0);
     stroke(255);
@@ -628,11 +644,6 @@ void lv2() {
       player.y = 425;
       lv = 1;
     }
-  }
-  if(script >= 80 && script <= 84) {
-    fill(0, 100);
-    stroke(0, 100);
-    rect(width/2,height/2,width,height);
   }
   switch(script) {
     case 48:
@@ -659,25 +670,75 @@ void lv2() {
     case 51:
       script++;
       break;
+    case 86:
+      if(fade > 180) {
+        fill(0,fade);
+        stroke(0, fade);
+        rect(width/2,height/2,width,height);
+        fade -= 2;
+      } else {
+        fill(0,fade);
+        stroke(0, fade);
+        rect(width/2,height/2,width,height);
+        timer = frameCount;
+        script++;
+      }
+      break;
+    case 87:
+      fill(0,fade);
+      stroke(0, fade);
+      rect(width/2,height/2,width,height);
+      if(frameCount-timer == 200) {
+        script++;
+        fade = 0;
+        doug.x = 1350;
+      }
+      break;
+    case 88:
+      if(doug.say("What are you doing in the dark?")) script++;
+      break;
+    case 89:
+      if(ghost1.say("Just got back. Didn't feel like going\nanywhere else.")) script++;
+      break;
+    case 90:
+      if(doug.say("Wanna come watch Annie Hall with us?\nI made fish tacos.")) script++;
+      break;
+    case 91:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+        lv = 3;
+        doug.x = 850;
+        doug.y = 550;
+        bates.x = 750;
+        bates.y = 550;
+        mcgee.x = 650;
+        mcgee.y = 550;
+        ghost3.y = 300;
+      }
+      break;
   }
 }
 
 void lv3() {
   background(living_room);
   textSize(20);
-  Collections.sort(props_living_room);
+  bates.sit();
+  mcgee.sit();
+  doug.sit();
   for(Prop prop : props_living_room) {
-    if(prop == player) {
-      player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
-    }
-    for(Prop prop2 : props_living_room) {
-      if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-30 < player.y) {
-        player.x = constrain(player.x, prop2.x+prop2.w/2, width);
-      }
-      if(prop2 != player && (prop2.x-prop2.w/2 < player.x && prop2.x+prop2.w/2 > player.x) && player.x<prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-30 < player.y) {
-        player.x = constrain(player.x, 0, prop2.x-prop2.w/2);
-      }
-    }
+    // if(prop == player) {
+    //   player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
+    // }
+
+    if(prop == ghost3) ghost3.update();
     prop.show();
   }
   if(player.x < 100 && player.x > -1 && player.y < 550 && player.y > 500) {
@@ -694,25 +755,12 @@ void lv3() {
       lv = 2;
     }
   }
-}
-
-void lv4() {
-  background(living_room);
-  textSize(20);
-  Collections.sort(props_living_room);
-  for(Prop prop : props_living_room) {
-    if(prop == player) {
-      player.update(gpad.getSlider("LX").getValue(), gpad.getSlider("LY").getValue());
-    }
-    for(Prop prop2 : props_living_room) {
-      if(prop2 != player && (prop2.x+prop2.w/2 > player.x && prop2.x-prop2.w/2 < player.x) && player.x>prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
-        player.x = constrain(player.x, prop2.x+prop2.w/2, width);
-      }
-      if(prop2 != player && (prop2.x-prop2.w/2 < player.x && prop2.x+prop2.w/2 > player.x) && player.x<prop2.x && prop2.y+prop2.h/2 >= player.y+player.h/2 && prop2.y-prop2.h/2 < player.y) {
-        player.x = constrain(player.x, 0, prop2.x-prop2.w/2);
-      }
-    }
-    prop.show();
+  tv_glare();
+  if(fade > 0) {
+    fill(0,fade);
+    stroke(0, fade);
+    rect(width/2,height/2,width,height);
+    fade -= 2;
   }
 }
 
@@ -792,18 +840,69 @@ void lv6() {
   fill(c, 20);
   rect(width/2, height/2, width, height);
   switch(script) {
-    case 72:
-      if(ghost3.say("This place hasn't changed at all.")) script++;
-      break;
     case 73:
-      if(ghost3.say("I probably wasn't gone for too long.")) script++;
+      if(fade > 0) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade -= 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+      }
       break;
     case 74:
-      if(ghost3.say("She should be walking in through the door\nany time now.")) script++;
+      if(ghost3.say("This place hasn't changed a bit.")) script++;
       break;
     case 75:
+      if(ghost3.say("I probably wasn't gone for too long.")) script++;
+      break;
+    case 76:
+      if(ghost3.say("She's usually sitting at the bar at this time.")) script++;
+      break;
+    case 77:
+      if(ghost3.say("What would I even say to her...")) script++;
+      break;
+    case 78:
+      if(ghost3.say("In all the time I spent standing right across\nfrom her I never once was sincere.")) script++;
+      break;
+    case 79:
+      if(ghost3.say("Perhaps I was merely using the 'it could never\nwork between us' schtick as a copout.")) script++;
+      break;
+    case 80:
+      if(ghost3.say("It always felt like God had put her on Earth\njust to taunt me.")) script++;
+      break;
+    case 81:
+      if(ghost3.say("Now it feels like he's sent me back down here\nfor the same reason.")) script++;
+      break;
+    case 82:
+      if(ghost3.say("No point in staying here any longer.")) script++;
+      break;
+    case 83:
+      if(ghost3.say("This is a game I refuse to play.")) script++;
+      break;
+    case 84:
       script++;
-      props_basement.add(ghost2);
+      props_kitchen.add(ghost1);
+      break;
+    case 85:
+      if(fade < 255) {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        fade += 2;
+      } else {
+        fill(0,fade);
+        stroke(0);
+        rect(width/2,height/2,width,height);
+        script++;
+        lv = 2;
+        song4.stop();
+        doug.x = 1500;
+        doug.y = 600;
+      }
       break;
   }
 }
@@ -811,9 +910,12 @@ void credits() {
   if(song1.isPlaying()) song1.stop();
   if(song2.isPlaying()) song2.stop();
   if(song3.isPlaying()) song3.stop();
+  if(song4.isPlaying()) song4.stop();
   dancin.play();
   background(0);
   image(dancin, 980, 410);
+  stroke(255);
+  fill(255);
   textSize(56);
   text("Special thanks to:", 720, 100);
   text("Drew Castalia \nPeter Jansen \nLaura Owen \nEvren Bozgeyikli \nGlenn Weyant", 480, 300);
@@ -865,17 +967,22 @@ void lightshow() {
 }
 
 void tv_glare() {
-  if(frameCount%3020 == 0) {
-    glare = random(0,255);
-  } else if(frameCount%3040 == 0) {
-    glare = random(0,255);
-  } else if(frameCount%3060 == 0) {
-    glare = random(0,255);
-  }
   colorMode(HSB);
-  stroke(glare, 100);
-  fill(glare, 100);
+  if(frameCount%30 == 0) {
+    glare = color(int(random(0,255)), 100, 100);
+  } else if(frameCount%40 == 0) {
+    glare = color(int(random(0,255)), 100, 100);
+  } else if(frameCount%50 == 0) {
+    glare = color(int(random(0,255)), 100, 100);
+  } if(frameCount%60 == 0) {
+    glare = color(0,0,100);
+  }
+  stroke(glare, 20);
+  fill(glare, 20);
   rect(width/2, height/2, width/2, height/2);
+  stroke(0, 20);
+  fill(0, 80);
+  rect(width/2, height/2, width, height);
 }
 
 void keyPressed() {
