@@ -64,8 +64,8 @@ Ghost ghost2;
 Ghost ghost3;
 Character player;
 
-int lv = 7;
-int script = 82;
+int lv = 0;
+int script = 0;
 int fade = 0;
 int timer;
 
@@ -585,8 +585,6 @@ public void lv1() {
     case 71:
       if(ghost3.say("I hope I can make it in time for the next\nsession of 'Aleanation'.")) {
         script++;
-        ghost3.x = width/2;
-        ghost3.y = height/2;
       }
       break;
     case 72:
@@ -600,6 +598,8 @@ public void lv1() {
         stroke(0);
         rect(width/2,height/2,width,height);
         script++;
+        ghost3.x = width/2;
+        ghost3.y = height/2;
         lv = 7;
       }
       break;
@@ -716,17 +716,17 @@ public void lv2() {
       if(frameCount-timer == 200) {
         script++;
         fade = 0;
-        doug.x = 1350;
+        bates.x = 1350;
       }
       break;
     case 88:
-      if(doug.say("What are you doing in the dark?")) script++;
+      if(bates.say("What are you doing in the dark?")) script++;
       break;
     case 89:
       if(ghost1.say("Just got back. Didn't feel like going\nanywhere else.")) script++;
       break;
     case 90:
-      if(doug.say("Wanna come watch Annie Hall with us?\nI made fish tacos.")) script++;
+      if(bates.say("Wanna come watch Annie Hall with us?\nDoug made fish tacos.")) script++;
       break;
     case 91:
       if(fade < 255) {
@@ -911,6 +911,7 @@ public void lv6() {
     case 84:
       script++;
       props_kitchen.add(ghost1);
+      props_kitchen.add(bates);
       break;
     case 85:
       if(fade < 255) {
@@ -926,7 +927,8 @@ public void lv6() {
         lv = 2;
         song4.stop();
         doug.x = 1500;
-        doug.y = 600;
+        bates.x = 1500;
+        bates.y = 600;
       }
       break;
   }
@@ -959,6 +961,7 @@ public void movieEvent(Movie m) {
 
 public void board() {
   background(255);
+  stroke(255);
   fill(0);
   ellipse(lens.x, lens.y, 175, 175);
   mascara=get();
@@ -1008,6 +1011,9 @@ public void tv_glare() {
   stroke(0, 20);
   fill(0, 80);
   rect(width/2, height/2, width, height);
+  fill(20);
+  stroke(20);
+  rect(width/2, 800, width/4, height/4);
 }
 
 public void keyPressed() {
